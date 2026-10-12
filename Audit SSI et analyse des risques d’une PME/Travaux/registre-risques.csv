@@ -1,0 +1,6 @@
+risque,scenario,proprietaire,vraisemblance_actuelle,impact_actuel,score_actuel,niveau_actuel,vraisemblance_cible,impact_cible,score_cible,niveau_cible,constats,actions,traitement_propose,decision_direction,statut,revue_proposee
+R-01,Accès conservé après un départ,Responsable administratif,3,3,9,Élevé,1,3,3,Faible,FE-01,ACT-01;ACT-06,Réduire,À décider,Ouvert,2026-11-30
+R-02,Droits excessifs non détectés,Responsable opérations,2,3,6,Modéré,1,3,3,Faible,FE-02,ACT-02;ACT-06,Réduire,À décider,Ouvert,2026-11-30
+R-03,Usage non attribuable de privilèges,Responsable IT,3,4,12,Critique,1,4,4,Modéré,FE-03,ACT-03;ACT-06,Réduire,À décider,Ouvert,2026-11-30
+R-04,Perte de données faute de copie récente,Responsable opérations,3,3,9,Élevé,1,3,3,Faible,FE-04,ACT-04;ACT-06,Réduire,À décider,Ouvert,2026-11-30
+R-05,Reprise du service non démontrée,Responsable opérations,2,4,8,Élevé,1,4,4,Modéré,FE-05,ACT-05;ACT-06,Réduire,À décider,Ouvert,2026-11-30

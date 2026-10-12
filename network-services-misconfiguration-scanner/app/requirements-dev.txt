@@ -1,0 +1,4 @@
+-r requirements.txt
+pyftpdlib==2.1.0
+pyasyncore==1.0.5
+pyasynchat==1.0.5

@@ -1,0 +1,385 @@
+{
+  "scanner_version": "1.0.0",
+  "schema_version": "1.0",
+  "target": "127.0.0.1",
+  "started_at": "2026-10-09T15:30:33+00:00",
+  "report_kind": "Local integration run: pyftpdlib, Impacket SMB server, controlled DNS responder, Net-SNMP, Paramiko SSH. Not Windows/Samba/BIND acceptance.",
+  "interrupted": false,
+  "policy": {
+    "name": "internal-services-v1",
+    "allow_anonymous_ftp": false,
+    "allow_anonymous_smb": false,
+    "allow_axfr": false
+  },
+  "settings": {
+    "services": [
+      "ftp",
+      "smb",
+      "dns",
+      "snmp",
+      "ssh"
+    ],
+    "ports": {
+      "ftp": 40285,
+      "smb": 1445,
+      "dns": 35059,
+      "snmp": 1161,
+      "ssh": 50017
+    },
+    "domain": "lab.test.",
+    "timeout_seconds": 1.0,
+    "tool_timeout_seconds": 40.0,
+    "snmp_community": "public (default)",
+    "smb_shares": [
+      "data"
+    ],
+    "python": "3.12.14"
+  },
+  "inventory": [
+    {
+      "service": "ftp",
+      "port": 40285,
+      "transport": "tcp",
+      "state": "open",
+      "fingerprint": {
+        "name": "ftp",
+        "method": "probed",
+        "conf": "10"
+      },
+      "note": "Port assignment is a candidate; protocol checks provide evidence."
+    },
+    {
+      "service": "smb",
+      "port": 1445,
+      "transport": "tcp",
+      "state": "open",
+      "fingerprint": {
+        "name": "proxima-lm",
+        "method": "table",
+        "conf": "3"
+      },
+      "note": "Port assignment is a candidate; protocol checks provide evidence."
+    },
+    {
+      "service": "dns",
+      "port": 35059,
+      "transport": "tcp",
+      "state": "open",
+      "fingerprint": {
+        "name": "tcpwrapped",
+        "method": "probed",
+        "conf": "8"
+      },
+      "note": "Port assignment is a candidate; protocol checks provide evidence."
+    },
+    {
+      "service": "ssh",
+      "port": 50017,
+      "transport": "tcp",
+      "state": "open",
+      "fingerprint": {
+        "name": "ssh",
+        "product": "Paramiko Python sshd",
+        "version": "3.5.1",
+        "extrainfo": "protocol 2.0",
+        "method": "probed",
+        "conf": "10"
+      },
+      "note": "Port assignment is a candidate; protocol checks provide evidence."
+    },
+    {
+      "service": "snmp",
+      "port": 1161,
+      "transport": "udp",
+      "state": "open",
+      "fingerprint": {
+        "name": "snmp",
+        "version": "2c",
+        "method": "protocol response"
+      },
+      "note": "SNMP uses a direct UDP GET; no TCP or ping prerequisite."
+    }
+  ],
+  "findings": [
+    {
+      "check_id": "FTP-001",
+      "service": "ftp",
+      "port": 40285,
+      "title": "Anonymous FTP login accepted",
+      "status": "detected",
+      "severity": "medium",
+      "evidence": {
+        "banner": "220 Loopback FTP test service",
+        "reply": "230 Login successful."
+      },
+      "impact": "Anonymous access can expose published directory information; file access depends on permissions.",
+      "remediation": "Disable anonymous access unless intentional; otherwise isolate public data and restrict permissions.",
+      "limitations": "Plain FTP only. One anonymous identity and the login directory are tested. No file read, write, or FTPS audit.",
+      "assessment": "policy_violation",
+      "observed_at": "2026-10-09T15:31:02+00:00"
+    },
+    {
+      "check_id": "FTP-002",
+      "service": "ftp",
+      "port": 40285,
+      "title": "FTP directory listing available anonymously",
+      "status": "detected",
+      "severity": "medium",
+      "evidence": {
+        "reply": "226 Transfer complete.",
+        "listing_sample": [
+          "-rw-r--r--   1 root     root           32 Oct 09 15:30 example.txt"
+        ],
+        "line_count": 1,
+        "note": "A completed empty listing is also valid evidence of listing permission."
+      },
+      "impact": "Anonymous access can expose published directory information; file access depends on permissions.",
+      "remediation": "Disable anonymous access unless intentional; otherwise isolate public data and restrict permissions.",
+      "limitations": "Plain FTP only. One anonymous identity and the login directory are tested. No file read, write, or FTPS audit.",
+      "assessment": "policy_violation",
+      "observed_at": "2026-10-09T15:31:02+00:00"
+    },
+    {
+      "check_id": "SMB-001",
+      "service": "smb",
+      "port": 1445,
+      "title": "SMBv1 offered",
+      "status": "detected",
+      "severity": "high",
+      "evidence": {
+        "dialects": [
+          "NT LM 0.12 (SMBv1) [dangerous, but default]",
+          "2:0:2"
+        ],
+        "reason": "Based on explicit smb-protocols XML; absent output is not a negative result."
+      },
+      "impact": "Legacy SMB increases exposure to obsolete protocol behavior.",
+      "remediation": "Disable SMBv1 after checking legacy dependencies.",
+      "limitations": "Signing evidence concerns negotiated dialects only. Empty credentials may map to Guest. Share tests use SMB2/3 and at most five share roots; file read/write and exploitation are not tested.",
+      "assessment": "policy_violation",
+      "observed_at": "2026-10-09T15:31:02+00:00"
+    },
+    {
+      "check_id": "SMB-002",
+      "service": "smb",
+      "port": 1445,
+      "title": "SMB signing not required",
+      "status": "detected",
+      "severity": "medium",
+      "evidence": {
+        "negotiated_modes": {
+          "2:0:2": [
+            "Message signing enabled but not required"
+          ]
+        },
+        "reason": "No conclusion is made for unreported dialects or unknown messages."
+      },
+      "impact": "Optional signing can contribute to relay or tampering risk, subject to other controls.",
+      "remediation": "Require SMB signing and verify compatibility with clients.",
+      "limitations": "Signing evidence concerns negotiated dialects only. Empty credentials may map to Guest. Share tests use SMB2/3 and at most five share roots; file read/write and exploitation are not tested.",
+      "assessment": "policy_violation",
+      "observed_at": "2026-10-09T15:31:02+00:00"
+    },
+    {
+      "check_id": "SMB-003",
+      "service": "smb",
+      "port": 1445,
+      "title": "Disk share names exposed without credentials",
+      "status": "detected",
+      "severity": "low",
+      "evidence": {
+        "shares": [
+          "IPC$",
+          "DATA"
+        ],
+        "reply_sample": "Disk|IPC$|\nDisk|DATA|Loopback data\nSMB1 disabled -- no workgroup available\n\nCan't load /etc/samba/smb.conf - run testparm to debug it\n"
+      },
+      "impact": "Share names can disclose the purpose of network resources.",
+      "remediation": "Restrict anonymous share enumeration where it is not intended.",
+      "limitations": "Signing evidence concerns negotiated dialects only. Empty credentials may map to Guest. Share tests use SMB2/3 and at most five share roots; file read/write and exploitation are not tested.",
+      "assessment": "policy_violation",
+      "observed_at": "2026-10-09T15:31:02+00:00"
+    },
+    {
+      "check_id": "SMB-004",
+      "service": "smb",
+      "port": 1445,
+      "title": "Share root listing available without credentials",
+      "status": "detected",
+      "severity": "medium",
+      "evidence": {
+        "attempts": [
+          {
+            "share": "data",
+            "status": "detected",
+            "reply_sample": "  example.txt                        AN       25  Fri Oct  9 17:25:46 2026\n\n\t\t148529400 blocks of size 1024. 14851044 blocks available\n\nCan't load /etc/samba/smb.conf - run testparm to debug it\n"
+          }
+        ],
+        "max_shares": 5
+      },
+      "impact": "Unauthenticated directory access exposes names and metadata in the tested share.",
+      "remediation": "Restrict guest access and review both share and filesystem permissions.",
+      "limitations": "Signing evidence concerns negotiated dialects only. Empty credentials may map to Guest. Share tests use SMB2/3 and at most five share roots; file read/write and exploitation are not tested.",
+      "assessment": "policy_violation",
+      "observed_at": "2026-10-09T15:31:02+00:00"
+    },
+    {
+      "check_id": "DNS-001",
+      "service": "dns",
+      "port": 35059,
+      "title": "Unsigned DNS zone transfer accepted",
+      "status": "detected",
+      "severity": "medium",
+      "evidence": {
+        "zone": "lab.test.",
+        "transport": "tcp",
+        "signed": false,
+        "soa_rcode": "NOERROR",
+        "authoritative_soa": true,
+        "records_received_including_closing_soa": 3,
+        "sample": [
+          {
+            "name": "lab.test.",
+            "type": "SOA",
+            "count": 1
+          },
+          {
+            "name": "www.lab.test.",
+            "type": "A",
+            "count": 1
+          },
+          {
+            "name": "lab.test.",
+            "type": "SOA",
+            "count": 1
+          }
+        ],
+        "completed": true
+      },
+      "impact": "The tested source can obtain zone records, potentially revealing infrastructure names and addresses.",
+      "remediation": "Restrict zone transfers to intended secondary servers and use TSIG where appropriate.",
+      "limitations": "Only the supplied zone and this scanner's source are tested. Source-IP authorization may be intentional. No subdomains or additional targets are followed; capped or incomplete transfers are inconclusive.",
+      "assessment": "policy_violation",
+      "observed_at": "2026-10-09T15:31:02+00:00"
+    },
+    {
+      "check_id": "SNMP-001",
+      "service": "snmp",
+      "port": 1161,
+      "title": "SNMPv2c read access accepted",
+      "status": "detected",
+      "severity": "medium",
+      "evidence": {
+        "version": "2c",
+        "oid": ".1.3.6.1.2.1.1.1.0",
+        "community_label": "public (default)",
+        "reply": ".1.3.6.1.2.1.1.1.0 = STRING: \"NSMS loopback test agent\"\n\n",
+        "exit_code": 0
+      },
+      "impact": "Community-based SNMP exposes the requested system description without encrypted transport.",
+      "remediation": "Prefer SNMPv3 authPriv, restrict management sources, and replace default community strings.",
+      "limitations": "One community and one read-only OID are tested. No response is inconclusive; write access, other communities, other OIDs, SNMPv1, and SNMPv3 configuration are not assessed.",
+      "assessment": "policy_violation",
+      "observed_at": "2026-10-09T15:31:02+00:00"
+    },
+    {
+      "check_id": "SSH-001",
+      "service": "ssh",
+      "port": 50017,
+      "title": "Legacy SSH key exchange offered",
+      "status": "not_detected",
+      "severity": "none",
+      "evidence": {
+        "offered": {
+          "kex_algorithms": [
+            "ecdh-sha2-nistp256",
+            "kex-strict-s-v00@openssh.com"
+          ]
+        },
+        "policy_matches": [],
+        "inventory_complete_for_category": true
+      },
+      "impact": "Legacy algorithms remain available to clients; actual session selection depends on negotiation.",
+      "remediation": "Remove the listed algorithms after testing client compatibility; keep the SSH implementation updated.",
+      "limitations": "Only offered algorithm names are checked against the documented project policy. No authentication or root-login setting is inferred. ssh-rsa denotes SHA-1 signatures, not every RSA key.",
+      "assessment": "no_violation_observed",
+      "observed_at": "2026-10-09T15:31:02+00:00"
+    },
+    {
+      "check_id": "SSH-002",
+      "service": "ssh",
+      "port": 50017,
+      "title": "Legacy SSH host signature offered",
+      "status": "not_detected",
+      "severity": "none",
+      "evidence": {
+        "offered": {
+          "server_host_key_algorithms": [
+            "rsa-sha2-512",
+            "rsa-sha2-256"
+          ]
+        },
+        "policy_matches": [],
+        "inventory_complete_for_category": true
+      },
+      "impact": "Legacy algorithms remain available to clients; actual session selection depends on negotiation.",
+      "remediation": "Remove the listed algorithms after testing client compatibility; keep the SSH implementation updated.",
+      "limitations": "Only offered algorithm names are checked against the documented project policy. No authentication or root-login setting is inferred. ssh-rsa denotes SHA-1 signatures, not every RSA key.",
+      "assessment": "no_violation_observed",
+      "observed_at": "2026-10-09T15:31:02+00:00"
+    },
+    {
+      "check_id": "SSH-003",
+      "service": "ssh",
+      "port": 50017,
+      "title": "Legacy SSH cipher offered",
+      "status": "not_detected",
+      "severity": "none",
+      "evidence": {
+        "offered": {
+          "encryption_algorithms": [
+            "aes128-ctr"
+          ]
+        },
+        "policy_matches": [],
+        "inventory_complete_for_category": true
+      },
+      "impact": "Legacy algorithms remain available to clients; actual session selection depends on negotiation.",
+      "remediation": "Remove the listed algorithms after testing client compatibility; keep the SSH implementation updated.",
+      "limitations": "Only offered algorithm names are checked against the documented project policy. No authentication or root-login setting is inferred. ssh-rsa denotes SHA-1 signatures, not every RSA key.",
+      "assessment": "no_violation_observed",
+      "observed_at": "2026-10-09T15:31:02+00:00"
+    },
+    {
+      "check_id": "SSH-004",
+      "service": "ssh",
+      "port": 50017,
+      "title": "Legacy SSH MAC offered",
+      "status": "not_detected",
+      "severity": "none",
+      "evidence": {
+        "offered": {
+          "mac_algorithms": [
+            "hmac-sha2-256"
+          ]
+        },
+        "policy_matches": [],
+        "inventory_complete_for_category": true
+      },
+      "impact": "Legacy algorithms remain available to clients; actual session selection depends on negotiation.",
+      "remediation": "Remove the listed algorithms after testing client compatibility; keep the SSH implementation updated.",
+      "limitations": "Only offered algorithm names are checked against the documented project policy. No authentication or root-login setting is inferred. ssh-rsa denotes SHA-1 signatures, not every RSA key.",
+      "assessment": "no_violation_observed",
+      "observed_at": "2026-10-09T15:31:02+00:00"
+    }
+  ],
+  "finished_at": "2026-10-09T15:31:02+00:00",
+  "summary": {
+    "total_checks": 12,
+    "detected": 8,
+    "not_detected": 4,
+    "inconclusive": 0,
+    "skipped": 0,
+    "policy_violations": 8
+  }
+}

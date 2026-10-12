@@ -1,0 +1,9 @@
+ticket,personne,compte,mouvement,date_effet,approbation_metier,execution_it,statut,detail
+ARR-0701,P-001,a.durand,Arrivée,2026-07-01,2026-06-29,2026-07-01,Clos,Equipe-Conseil validée
+MOB-0801,P-002,m.girard,Mobilité,2026-08-01,,,Ouvert,Passage de Conseil à Support ; revue des groupes non fournie
+ARR-0810,P-003,c.robert,Arrivée,2026-08-10,2026-08-07,2026-08-10,Clos,Equipe-Conseil validée
+ARR-0901,P-004,n.haddad,Arrivée,2026-09-01,2026-08-28,2026-09-01,Clos,Equipe-Support validée
+DEP-0918,P-005,l.moreau,Départ,2026-09-18,Sans objet,,Ouvert,Dernier jour signalé par RH
+DEP-0925,P-006,s.benali,Départ,2026-09-25,Sans objet,,Ouvert,Dernier jour signalé par RH
+DEP-0904,P-007,e.petit,Départ,2026-09-04,Sans objet,2026-09-04,Clos,Compte et VPN désactivés ; confirmation RH reçue
+DEP-0731,P-008,y.martin,Départ,2026-07-31,Sans objet,2026-07-31,Clos,Compte et VPN désactivés ; confirmation RH reçue

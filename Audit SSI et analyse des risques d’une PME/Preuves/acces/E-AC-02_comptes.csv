@@ -1,0 +1,11 @@
+compte,nature,personne,actif,groupes,vpn,mfa_vpn,proprietaire,connexion_interactive
+a.durand,Nominatif,P-001,Oui,Equipe-Conseil,Oui,Oui,Responsable opérations,Oui
+m.girard,Nominatif,P-002,Oui,Equipe-Conseil;Equipe-Support,Oui,Oui,Responsable opérations,Oui
+c.robert,Nominatif,P-003,Oui,Equipe-Conseil,Oui,Oui,Responsable opérations,Oui
+n.haddad,Nominatif,P-004,Oui,Equipe-Support,Oui,Oui,Responsable opérations,Oui
+l.moreau,Nominatif,P-005,Oui,Equipe-Conseil,Oui,Oui,Responsable opérations,Oui
+s.benali,Nominatif,P-006,Oui,Equipe-Support,Oui,Oui,Responsable opérations,Oui
+e.petit,Nominatif,P-007,Non,,Non,Sans objet,Responsable opérations,Non
+y.martin,Nominatif,P-008,Non,,Non,Sans objet,Responsable opérations,Non
+it.admin,Administration partagée,,Oui,Domain Admins,Via sessions des intervenants,Voir E-AC-04,Responsable IT,Oui
+svc.backup,Service,,Oui,Backup Operators,Non,Sans objet,Responsable IT,Non

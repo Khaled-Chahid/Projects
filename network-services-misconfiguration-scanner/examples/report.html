@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<title>Network Services Misconfiguration Scanner — 127.0.0.1</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#203047;background:#f4f6f8;line-height:1.55}
+*{box-sizing:border-box}body{margin:0}header{background:#10283e;color:#fff;padding:44px max(24px,calc((100vw - 1080px)/2))}
+header p{color:#c5d6e4}h1{font-size:clamp(26px,4vw,38px);line-height:1.2;max-width:850px;margin:12px 0}
+.eyebrow{letter-spacing:.13em;font-size:12px;font-weight:700;color:#82d5c4}main{max-width:1128px;margin:auto;padding:28px 24px 48px}
+.meta{font-size:14px}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:22px 0}
+.metric{background:#fff;border:1px solid #dce3ea;border-radius:10px;padding:20px}.metric strong{font-size:34px;display:block;line-height:1.2}.metric span{font-size:13px}
+.note{background:#e8f2f3;border-left:4px solid #288574;padding:16px 20px;border-radius:4px}
+h2{font-size:21px;margin-top:34px}h3{font-size:19px;margin:10px 0 2px}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;background:white;font-size:14px}
+th,td{text-align:left;padding:12px;border-bottom:1px solid #e1e7ec;vertical-align:top}th{color:#516779;background:#ebf0f5}small{display:block;color:#627487;margin-top:5px}
+.finding{background:white;border:1px solid #dce3ea;border-left:4px solid #7b8ea0;padding:22px;border-radius:8px;margin:16px 0}
+.finding.detected{border-left-color:#c38220}.finding.not_detected{border-left-color:#37816f}.finding.inconclusive{border-left-color:#6572ac}
+.finding-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.id{font-size:12px;font-weight:700;color:#526a7e}.badge{font-size:11px;font-weight:700;background:#edf1f5;padding:3px 8px;border-radius:4px}
+.assessment{color:#67788b;font-size:13px;margin:3px 0 16px}dl{display:grid;grid-template-columns:130px 1fr;gap:8px;font-size:14px}dt{font-weight:650}dd{margin:0}
+details{border-top:1px solid #e4e9ed;padding-top:12px;font-size:13px}summary{cursor:pointer;font-weight:650}pre{background:#f2f5f8;padding:16px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px}
+footer{font-size:12px;color:#67788b;padding-top:26px}@media(max-width:640px){.metrics{grid-template-columns:repeat(2,1fr)}dl{grid-template-columns:1fr}dd{margin-bottom:8px}}
+@media print{header{background:white;color:#10283e;padding:16px}header p{color:#203047}.finding{break-inside:avoid}main{padding:16px}details{display:block}}
+</style></head><body>
+<header><div class="eyebrow">NETWORK SECURITY · CONFIGURATION REVIEW</div><h1>Network Services<br>Misconfiguration Scanner</h1>
+<p>Evidence from a defined set of remote checks.</p><div class="meta">Target: 127.0.0.1 · Version 1.0.0<br>
+2026-10-09T15:30:33+00:00 → 2026-10-09T15:31:02+00:00</div></header>
+<main><p class="note"><strong>Local integration run: pyftpdlib, Impacket SMB server, controlled DNS responder, Net-SNMP, Paramiko SSH. Not Windows/Samba/BIND acceptance.</strong><br>
+Policy: internal-services-v1. A negative check is limited to its stated scope. Missing evidence, connection errors, and untested services do not establish security.</p>
+<div class="metrics"><div class="metric"><strong>8</strong><span>Policy violations</span></div><div class="metric"><strong>4</strong><span>Not observed</span></div><div class="metric"><strong>0</strong><span>Inconclusive</span></div><div class="metric"><strong>0</strong><span>Skipped</span></div></div><p>12 check results · 8 observed behaviors. Intentional exceptions appear as review items, not policy violations.</p>
+<h2>Scope and discovery</h2><p>Single IPv4 address; selected service ports only. SNMP is checked separately over UDP.</p>
+<div class="table-wrap"><table><thead><tr><th>Service</th><th>Endpoint</th><th>State</th><th>Fingerprint / context</th></tr></thead><tbody><tr><td>FTP</td><td>40285/tcp</td><td>open</td><td>{&quot;name&quot;: &quot;ftp&quot;, &quot;method&quot;: &quot;probed&quot;, &quot;conf&quot;: &quot;10&quot;}<small>Port assignment is a candidate; protocol checks provide evidence.</small></td></tr><tr><td>SMB</td><td>1445/tcp</td><td>open</td><td>{&quot;name&quot;: &quot;proxima-lm&quot;, &quot;method&quot;: &quot;table&quot;, &quot;conf&quot;: &quot;3&quot;}<small>Port assignment is a candidate; protocol checks provide evidence.</small></td></tr><tr><td>DNS</td><td>35059/tcp</td><td>open</td><td>{&quot;name&quot;: &quot;tcpwrapped&quot;, &quot;method&quot;: &quot;probed&quot;, &quot;conf&quot;: &quot;8&quot;}<small>Port assignment is a candidate; protocol checks provide evidence.</small></td></tr><tr><td>SSH</td><td>50017/tcp</td><td>open</td><td>{&quot;name&quot;: &quot;ssh&quot;, &quot;product&quot;: &quot;Paramiko Python sshd&quot;, &quot;version&quot;: &quot;3.5.1&quot;, &quot;extrainfo&quot;: &quot;protocol 2.0&quot;, &quot;method&quot;: &quot;probed&quot;, &quot;conf&quot;: &quot;10&quot;}<small>Port assignment is a candidate; protocol checks provide evidence.</small></td></tr><tr><td>SNMP</td><td>1161/udp</td><td>open</td><td>{&quot;name&quot;: &quot;snmp&quot;, &quot;version&quot;: &quot;2c&quot;, &quot;method&quot;: &quot;protocol response&quot;}<small>SNMP uses a direct UDP GET; no TCP or ping prerequisite.</small></td></tr></tbody></table></div>
+<h2>Check results</h2><article class="finding detected">
+<div class="finding-top"><span class="id">FTP-001 · FTP:40285</span>
+<span class="badge">DETECTED / MEDIUM</span></div>
+<h3>Anonymous FTP login accepted</h3><p class="assessment">policy violation</p>
+<dl><dt>Impact</dt><dd>Anonymous access can expose published directory information; file access depends on permissions.</dd><dt>Recommendation</dt><dd>Disable anonymous access unless intentional; otherwise isolate public data and restrict permissions.</dd>
+<dt>Limitations</dt><dd>Plain FTP only. One anonymous identity and the login directory are tested. No file read, write, or FTPS audit.</dd></dl>
+<details><summary>Evidence · 2026-10-09T15:31:02+00:00</summary><pre>{
+  &quot;banner&quot;: &quot;220 Loopback FTP test service&quot;,
+  &quot;reply&quot;: &quot;230 Login successful.&quot;
+}</pre></details>
+</article><article class="finding detected">
+<div class="finding-top"><span class="id">FTP-002 · FTP:40285</span>
+<span class="badge">DETECTED / MEDIUM</span></div>
+<h3>FTP directory listing available anonymously</h3><p class="assessment">policy violation</p>
+<dl><dt>Impact</dt><dd>Anonymous access can expose published directory information; file access depends on permissions.</dd><dt>Recommendation</dt><dd>Disable anonymous access unless intentional; otherwise isolate public data and restrict permissions.</dd>
+<dt>Limitations</dt><dd>Plain FTP only. One anonymous identity and the login directory are tested. No file read, write, or FTPS audit.</dd></dl>
+<details><summary>Evidence · 2026-10-09T15:31:02+00:00</summary><pre>{
+  &quot;reply&quot;: &quot;226 Transfer complete.&quot;,
+  &quot;listing_sample&quot;: [
+    &quot;-rw-r--r--   1 root     root           32 Oct 09 15:30 example.txt&quot;
+  ],
+  &quot;line_count&quot;: 1,
+  &quot;note&quot;: &quot;A completed empty listing is also valid evidence of listing permission.&quot;
+}</pre></details>
+</article><article class="finding detected">
+<div class="finding-top"><span class="id">SMB-001 · SMB:1445</span>
+<span class="badge">DETECTED / HIGH</span></div>
+<h3>SMBv1 offered</h3><p class="assessment">policy violation</p>
+<dl><dt>Impact</dt><dd>Legacy SMB increases exposure to obsolete protocol behavior.</dd><dt>Recommendation</dt><dd>Disable SMBv1 after checking legacy dependencies.</dd>
+<dt>Limitations</dt><dd>Signing evidence concerns negotiated dialects only. Empty credentials may map to Guest. Share tests use SMB2/3 and at most five share roots; file read/write and exploitation are not tested.</dd></dl>
+<details><summary>Evidence · 2026-10-09T15:31:02+00:00</summary><pre>{
+  &quot;dialects&quot;: [
+    &quot;NT LM 0.12 (SMBv1) [dangerous, but default]&quot;,
+    &quot;2:0:2&quot;
+  ],
+  &quot;reason&quot;: &quot;Based on explicit smb-protocols XML; absent output is not a negative result.&quot;
+}</pre></details>
+</article><article class="finding detected">
+<div class="finding-top"><span class="id">SMB-002 · SMB:1445</span>
+<span class="badge">DETECTED / MEDIUM</span></div>
+<h3>SMB signing not required</h3><p class="assessment">policy violation</p>
+<dl><dt>Impact</dt><dd>Optional signing can contribute to relay or tampering risk, subject to other controls.</dd><dt>Recommendation</dt><dd>Require SMB signing and verify compatibility with clients.</dd>
+<dt>Limitations</dt><dd>Signing evidence concerns negotiated dialects only. Empty credentials may map to Guest. Share tests use SMB2/3 and at most five share roots; file read/write and exploitation are not tested.</dd></dl>
+<details><summary>Evidence · 2026-10-09T15:31:02+00:00</summary><pre>{
+  &quot;negotiated_modes&quot;: {
+    &quot;2:0:2&quot;: [
+      &quot;Message signing enabled but not required&quot;
+    ]
+  },
+  &quot;reason&quot;: &quot;No conclusion is made for unreported dialects or unknown messages.&quot;
+}</pre></details>
+</article><article class="finding detected">
+<div class="finding-top"><span class="id">SMB-003 · SMB:1445</span>
+<span class="badge">DETECTED / LOW</span></div>
+<h3>Disk share names exposed without credentials</h3><p class="assessment">policy violation</p>
+<dl><dt>Impact</dt><dd>Share names can disclose the purpose of network resources.</dd><dt>Recommendation</dt><dd>Restrict anonymous share enumeration where it is not intended.</dd>
+<dt>Limitations</dt><dd>Signing evidence concerns negotiated dialects only. Empty credentials may map to Guest. Share tests use SMB2/3 and at most five share roots; file read/write and exploitation are not tested.</dd></dl>
+<details><summary>Evidence · 2026-10-09T15:31:02+00:00</summary><pre>{
+  &quot;shares&quot;: [
+    &quot;IPC$&quot;,
+    &quot;DATA&quot;
+  ],
+  &quot;reply_sample&quot;: &quot;Disk|IPC$|\nDisk|DATA|Loopback data\nSMB1 disabled -- no workgroup available\n\nCan&#x27;t load /etc/samba/smb.conf - run testparm to debug it\n&quot;
+}</pre></details>
+</article><article class="finding detected">
+<div class="finding-top"><span class="id">SMB-004 · SMB:1445</span>
+<span class="badge">DETECTED / MEDIUM</span></div>
+<h3>Share root listing available without credentials</h3><p class="assessment">policy violation</p>
+<dl><dt>Impact</dt><dd>Unauthenticated directory access exposes names and metadata in the tested share.</dd><dt>Recommendation</dt><dd>Restrict guest access and review both share and filesystem permissions.</dd>
+<dt>Limitations</dt><dd>Signing evidence concerns negotiated dialects only. Empty credentials may map to Guest. Share tests use SMB2/3 and at most five share roots; file read/write and exploitation are not tested.</dd></dl>
+<details><summary>Evidence · 2026-10-09T15:31:02+00:00</summary><pre>{
+  &quot;attempts&quot;: [
+    {
+      &quot;share&quot;: &quot;data&quot;,
+      &quot;status&quot;: &quot;detected&quot;,
+      &quot;reply_sample&quot;: &quot;  example.txt                        AN       25  Fri Oct  9 17:25:46 2026\n\n\t\t148529400 blocks of size 1024. 14851044 blocks available\n\nCan&#x27;t load /etc/samba/smb.conf - run testparm to debug it\n&quot;
+    }
+  ],
+  &quot;max_shares&quot;: 5
+}</pre></details>
+</article><article class="finding detected">
+<div class="finding-top"><span class="id">DNS-001 · DNS:35059</span>
+<span class="badge">DETECTED / MEDIUM</span></div>
+<h3>Unsigned DNS zone transfer accepted</h3><p class="assessment">policy violation</p>
+<dl><dt>Impact</dt><dd>The tested source can obtain zone records, potentially revealing infrastructure names and addresses.</dd><dt>Recommendation</dt><dd>Restrict zone transfers to intended secondary servers and use TSIG where appropriate.</dd>
+<dt>Limitations</dt><dd>Only the supplied zone and this scanner&#x27;s source are tested. Source-IP authorization may be intentional. No subdomains or additional targets are followed; capped or incomplete transfers are inconclusive.</dd></dl>
+<details><summary>Evidence · 2026-10-09T15:31:02+00:00</summary><pre>{
+  &quot;zone&quot;: &quot;lab.test.&quot;,
+  &quot;transport&quot;: &quot;tcp&quot;,
+  &quot;signed&quot;: false,
+  &quot;soa_rcode&quot;: &quot;NOERROR&quot;,
+  &quot;authoritative_soa&quot;: true,
+  &quot;records_received_including_closing_soa&quot;: 3,
+  &quot;sample&quot;: [
+    {
+      &quot;name&quot;: &quot;lab.test.&quot;,
+      &quot;type&quot;: &quot;SOA&quot;,
+      &quot;count&quot;: 1
+    },
+    {
+      &quot;name&quot;: &quot;www.lab.test.&quot;,
+      &quot;type&quot;: &quot;A&quot;,
+      &quot;count&quot;: 1
+    },
+    {
+      &quot;name&quot;: &quot;lab.test.&quot;,
+      &quot;type&quot;: &quot;SOA&quot;,
+      &quot;count&quot;: 1
+    }
+  ],
+  &quot;completed&quot;: true
+}</pre></details>
+</article><article class="finding detected">
+<div class="finding-top"><span class="id">SNMP-001 · SNMP:1161</span>
+<span class="badge">DETECTED / MEDIUM</span></div>
+<h3>SNMPv2c read access accepted</h3><p class="assessment">policy violation</p>
+<dl><dt>Impact</dt><dd>Community-based SNMP exposes the requested system description without encrypted transport.</dd><dt>Recommendation</dt><dd>Prefer SNMPv3 authPriv, restrict management sources, and replace default community strings.</dd>
+<dt>Limitations</dt><dd>One community and one read-only OID are tested. No response is inconclusive; write access, other communities, other OIDs, SNMPv1, and SNMPv3 configuration are not assessed.</dd></dl>
+<details><summary>Evidence · 2026-10-09T15:31:02+00:00</summary><pre>{
+  &quot;version&quot;: &quot;2c&quot;,
+  &quot;oid&quot;: &quot;.1.3.6.1.2.1.1.1.0&quot;,
+  &quot;community_label&quot;: &quot;public (default)&quot;,
+  &quot;reply&quot;: &quot;.1.3.6.1.2.1.1.1.0 = STRING: \&quot;NSMS loopback test agent\&quot;\n\n&quot;,
+  &quot;exit_code&quot;: 0
+}</pre></details>
+</article><article class="finding not_detected">
+<div class="finding-top"><span class="id">SSH-001 · SSH:50017</span>
+<span class="badge">NOT DETECTED / NONE</span></div>
+<h3>Legacy SSH key exchange offered</h3><p class="assessment">no violation observed</p>
+<dl><dt>Impact</dt><dd>Legacy algorithms remain available to clients; actual session selection depends on negotiation.</dd><dt>Recommendation</dt><dd>Remove the listed algorithms after testing client compatibility; keep the SSH implementation updated.</dd>
+<dt>Limitations</dt><dd>Only offered algorithm names are checked against the documented project policy. No authentication or root-login setting is inferred. ssh-rsa denotes SHA-1 signatures, not every RSA key.</dd></dl>
+<details><summary>Evidence · 2026-10-09T15:31:02+00:00</summary><pre>{
+  &quot;offered&quot;: {
+    &quot;kex_algorithms&quot;: [
+      &quot;ecdh-sha2-nistp256&quot;,
+      &quot;kex-strict-s-v00@openssh.com&quot;
+    ]
+  },
+  &quot;policy_matches&quot;: [],
+  &quot;inventory_complete_for_category&quot;: true
+}</pre></details>
+</article><article class="finding not_detected">
+<div class="finding-top"><span class="id">SSH-002 · SSH:50017</span>
+<span class="badge">NOT DETECTED / NONE</span></div>
+<h3>Legacy SSH host signature offered</h3><p class="assessment">no violation observed</p>
+<dl><dt>Impact</dt><dd>Legacy algorithms remain available to clients; actual session selection depends on negotiation.</dd><dt>Recommendation</dt><dd>Remove the listed algorithms after testing client compatibility; keep the SSH implementation updated.</dd>
+<dt>Limitations</dt><dd>Only offered algorithm names are checked against the documented project policy. No authentication or root-login setting is inferred. ssh-rsa denotes SHA-1 signatures, not every RSA key.</dd></dl>
+<details><summary>Evidence · 2026-10-09T15:31:02+00:00</summary><pre>{
+  &quot;offered&quot;: {
+    &quot;server_host_key_algorithms&quot;: [
+      &quot;rsa-sha2-512&quot;,
+      &quot;rsa-sha2-256&quot;
+    ]
+  },
+  &quot;policy_matches&quot;: [],
+  &quot;inventory_complete_for_category&quot;: true
+}</pre></details>
+</article><article class="finding not_detected">
+<div class="finding-top"><span class="id">SSH-003 · SSH:50017</span>
+<span class="badge">NOT DETECTED / NONE</span></div>
+<h3>Legacy SSH cipher offered</h3><p class="assessment">no violation observed</p>
+<dl><dt>Impact</dt><dd>Legacy algorithms remain available to clients; actual session selection depends on negotiation.</dd><dt>Recommendation</dt><dd>Remove the listed algorithms after testing client compatibility; keep the SSH implementation updated.</dd>
+<dt>Limitations</dt><dd>Only offered algorithm names are checked against the documented project policy. No authentication or root-login setting is inferred. ssh-rsa denotes SHA-1 signatures, not every RSA key.</dd></dl>
+<details><summary>Evidence · 2026-10-09T15:31:02+00:00</summary><pre>{
+  &quot;offered&quot;: {
+    &quot;encryption_algorithms&quot;: [
+      &quot;aes128-ctr&quot;
+    ]
+  },
+  &quot;policy_matches&quot;: [],
+  &quot;inventory_complete_for_category&quot;: true
+}</pre></details>
+</article><article class="finding not_detected">
+<div class="finding-top"><span class="id">SSH-004 · SSH:50017</span>
+<span class="badge">NOT DETECTED / NONE</span></div>
+<h3>Legacy SSH MAC offered</h3><p class="assessment">no violation observed</p>
+<dl><dt>Impact</dt><dd>Legacy algorithms remain available to clients; actual session selection depends on negotiation.</dd><dt>Recommendation</dt><dd>Remove the listed algorithms after testing client compatibility; keep the SSH implementation updated.</dd>
+<dt>Limitations</dt><dd>Only offered algorithm names are checked against the documented project policy. No authentication or root-login setting is inferred. ssh-rsa denotes SHA-1 signatures, not every RSA key.</dd></dl>
+<details><summary>Evidence · 2026-10-09T15:31:02+00:00</summary><pre>{
+  &quot;offered&quot;: {
+    &quot;mac_algorithms&quot;: [
+      &quot;hmac-sha2-256&quot;
+    ]
+  },
+  &quot;policy_matches&quot;: [],
+  &quot;inventory_complete_for_category&quot;: true
+}</pre></details>
+</article>
+<h2>Run settings</h2><pre>{
+  &quot;services&quot;: [
+    &quot;ftp&quot;,
+    &quot;smb&quot;,
+    &quot;dns&quot;,
+    &quot;snmp&quot;,
+    &quot;ssh&quot;
+  ],
+  &quot;ports&quot;: {
+    &quot;ftp&quot;: 40285,
+    &quot;smb&quot;: 1445,
+    &quot;dns&quot;: 35059,
+    &quot;snmp&quot;: 1161,
+    &quot;ssh&quot;: 50017
+  },
+  &quot;domain&quot;: &quot;lab.test.&quot;,
+  &quot;timeout_seconds&quot;: 1.0,
+  &quot;tool_timeout_seconds&quot;: 40.0,
+  &quot;snmp_community&quot;: &quot;public (default)&quot;,
+  &quot;smb_shares&quot;: [
+    &quot;data&quot;
+  ],
+  &quot;python&quot;: &quot;3.12.14&quot;
+}</pre>
+<footer>Network Services Misconfiguration Scanner · No overall security certification or CVE exploitation claim. Reports may contain internal names; review before publishing.</footer>
+</main></body></html>
