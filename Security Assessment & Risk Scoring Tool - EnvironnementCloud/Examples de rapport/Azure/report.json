@@ -1,0 +1,340 @@
+{
+  "generated_at": "2026-08-08T20:42:20.046245+00:00",
+  "provider": "azure-topaz",
+  "subscription_id": "11111111-1111-1111-1111-111111111111",
+  "resource_counts": {
+    "users": 3,
+    "service_principals": 2,
+    "resource_groups": 2,
+    "role_assignments": 5,
+    "role_definitions": 431,
+    "storage_accounts": 2,
+    "blob_containers": 2,
+    "virtual_machines": 1,
+    "managed_disks": 2,
+    "virtual_networks": 1,
+    "network_security_groups": 2,
+    "network_interfaces": 2,
+    "public_ip_addresses": 2
+  },
+  "summary": {
+    "finding_count": 11,
+    "severity_counts": {
+      "Critical": 3,
+      "High": 3,
+      "Medium": 2,
+      "Low": 3
+    },
+    "maximum_score": 100
+  },
+  "findings": [
+    {
+      "rule_id": "AZ-RBAC-001",
+      "title": "Owner role assigned at subscription scope",
+      "category": "IAM/RBAC",
+      "initial_severity": "Critical",
+      "resource": {
+        "id": "/subscriptions/11111111-1111-1111-1111-111111111111/providers/Microsoft.Authorization/roleAssignments/10000000-0000-0000-0000-000000000001",
+        "name": "10000000-0000-0000-0000-000000000001",
+        "type": "Microsoft.Authorization/roleAssignments",
+        "resource_group": null
+      },
+      "description": "The principal can manage all resources and delegate access across the subscription.",
+      "evidence": {
+        "principal": "Alice Admin",
+        "principal_id": "0646301d-2068-4fdf-a043-4c5192ac3cdd",
+        "role": "Owner",
+        "scope": "/subscriptions/11111111-1111-1111-1111-111111111111"
+      },
+      "recommendation": "Remove the Owner assignment or reduce it to the smallest resource scope and role required.",
+      "risk_factors": {
+        "internet_exposure": 0,
+        "privilege": 10,
+        "sensitivity": 0,
+        "exploitability": 8
+      },
+      "risk_score": 100,
+      "severity": "Critical"
+    },
+    {
+      "rule_id": "AZ-RBAC-001",
+      "title": "Owner role assigned at subscription scope",
+      "category": "IAM/RBAC",
+      "initial_severity": "Critical",
+      "resource": {
+        "id": "/subscriptions/11111111-1111-1111-1111-111111111111/providers/Microsoft.Authorization/roleAssignments/00000000-0000-0000-0000-000000000000",
+        "name": "00000000-0000-0000-0000-000000000000",
+        "type": "Microsoft.Authorization/roleAssignments",
+        "resource_group": null
+      },
+      "description": "The principal can manage all resources and delegate access across the subscription.",
+      "evidence": {
+        "principal": "Topaz Admin",
+        "principal_id": "00000000-0000-0000-0000-000000000000",
+        "role": "Owner",
+        "scope": "/subscriptions/11111111-1111-1111-1111-111111111111"
+      },
+      "recommendation": "Remove the Owner assignment or reduce it to the smallest resource scope and role required.",
+      "risk_factors": {
+        "internet_exposure": 0,
+        "privilege": 10,
+        "sensitivity": 0,
+        "exploitability": 8
+      },
+      "risk_score": 100,
+      "severity": "Critical"
+    },
+    {
+      "rule_id": "AZ-STG-002",
+      "title": "Blob container is exposed to anonymous access",
+      "category": "Storage",
+      "initial_severity": "High",
+      "resource": {
+        "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-production/providers/Microsoft.Storage/storageAccounts/stpublicdata/blobServices/default/containers/public-data",
+        "name": "public-data",
+        "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+        "resource_group": "rg-production"
+      },
+      "description": "Anonymous users can read data from the Blob container according to its access level.",
+      "evidence": {
+        "storage_account": "stpublicdata",
+        "container": "public-data",
+        "public_access": "container"
+      },
+      "recommendation": "Set the container access level to private and provide access through identities or short-lived SAS tokens.",
+      "risk_factors": {
+        "internet_exposure": 10,
+        "privilege": 0,
+        "sensitivity": 8,
+        "exploitability": 8
+      },
+      "risk_score": 91,
+      "severity": "Critical"
+    },
+    {
+      "rule_id": "AZ-NET-001",
+      "title": "Management port exposed to the Internet",
+      "category": "Network",
+      "initial_severity": "High",
+      "resource": {
+        "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-production/providers/Microsoft.Network/networkSecurityGroups/nsg-public-admin",
+        "name": "nsg-public-admin",
+        "type": "Microsoft.Network/networkSecurityGroups",
+        "resource_group": "rg-production"
+      },
+      "description": "An inbound NSG rule permits Internet access to a remote administration service.",
+      "evidence": {
+        "rule": "Allow-RDP-Internet",
+        "sources": [
+          "Internet"
+        ],
+        "ports": [
+          "3389"
+        ],
+        "services": [
+          "RDP"
+        ]
+      },
+      "recommendation": "Restrict the rule to trusted source addresses or use Azure Bastion, VPN or a private management network.",
+      "risk_factors": {
+        "internet_exposure": 10,
+        "privilege": 0,
+        "sensitivity": 0,
+        "exploitability": 8
+      },
+      "risk_score": 83,
+      "severity": "High"
+    },
+    {
+      "rule_id": "AZ-NET-001",
+      "title": "Management port exposed to the Internet",
+      "category": "Network",
+      "initial_severity": "High",
+      "resource": {
+        "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-production/providers/Microsoft.Network/networkSecurityGroups/nsg-public-admin",
+        "name": "nsg-public-admin",
+        "type": "Microsoft.Network/networkSecurityGroups",
+        "resource_group": "rg-production"
+      },
+      "description": "An inbound NSG rule permits Internet access to a remote administration service.",
+      "evidence": {
+        "rule": "Allow-SSH-Internet",
+        "sources": [
+          "0.0.0.0/0"
+        ],
+        "ports": [
+          "22"
+        ],
+        "services": [
+          "SSH"
+        ]
+      },
+      "recommendation": "Restrict the rule to trusted source addresses or use Azure Bastion, VPN or a private management network.",
+      "risk_factors": {
+        "internet_exposure": 10,
+        "privilege": 0,
+        "sensitivity": 0,
+        "exploitability": 8
+      },
+      "risk_score": 83,
+      "severity": "High"
+    },
+    {
+      "rule_id": "AZ-RBAC-002",
+      "title": "Contributor role assigned at subscription scope",
+      "category": "IAM/RBAC",
+      "initial_severity": "High",
+      "resource": {
+        "id": "/subscriptions/11111111-1111-1111-1111-111111111111/providers/Microsoft.Authorization/roleAssignments/10000000-0000-0000-0000-000000000002",
+        "name": "10000000-0000-0000-0000-000000000002",
+        "type": "Microsoft.Authorization/roleAssignments",
+        "resource_group": null
+      },
+      "description": "The principal can create, modify and delete resources throughout the subscription.",
+      "evidence": {
+        "principal": "sp-deployment",
+        "principal_id": "0aafaab3-61f0-4e0f-a452-97382ee22109",
+        "role": "Contributor",
+        "scope": "/subscriptions/11111111-1111-1111-1111-111111111111"
+      },
+      "recommendation": "Use a narrower built-in role and apply it only to the required resource group or resource.",
+      "risk_factors": {
+        "internet_exposure": 0,
+        "privilege": 8,
+        "sensitivity": 0,
+        "exploitability": 7
+      },
+      "risk_score": 80,
+      "severity": "High"
+    },
+    {
+      "rule_id": "AZ-STG-001",
+      "title": "Storage account permits public Blob access",
+      "category": "Storage",
+      "initial_severity": "Medium",
+      "resource": {
+        "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-production/providers/Microsoft.Storage/storageAccounts/stpublicdata",
+        "name": "stpublicdata",
+        "type": "Microsoft.Storage/storageAccounts",
+        "resource_group": "rg-production"
+      },
+      "description": "The storage account allows containers to be configured for anonymous access.",
+      "evidence": {
+        "allowBlobPublicAccess": true,
+        "publicNetworkAccess": "Enabled"
+      },
+      "recommendation": "Disable allowBlobPublicAccess unless anonymous access is explicitly required.",
+      "risk_factors": {
+        "internet_exposure": 4,
+        "privilege": 0,
+        "sensitivity": 8,
+        "exploitability": 4
+      },
+      "risk_score": 56,
+      "severity": "Medium"
+    },
+    {
+      "rule_id": "AZ-ORPH-001",
+      "title": "Managed disk is not attached to a virtual machine",
+      "category": "Orphaned Asset",
+      "initial_severity": "Medium",
+      "resource": {
+        "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-production/providers/Microsoft.Compute/disks/disk-old-backup",
+        "name": "disk-old-backup",
+        "type": "Microsoft.Compute/disks",
+        "resource_group": "rg-production"
+      },
+      "description": "The managed disk is not referenced by any discovered virtual machine.",
+      "evidence": {
+        "disk_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-production/providers/Microsoft.Compute/disks/disk-old-backup",
+        "disk_size_gb": 256
+      },
+      "recommendation": "Validate whether the disk is still needed, snapshot required data and delete unused disks.",
+      "risk_factors": {
+        "internet_exposure": 0,
+        "privilege": 0,
+        "sensitivity": 8,
+        "exploitability": 0
+      },
+      "risk_score": 48,
+      "severity": "Medium"
+    },
+    {
+      "rule_id": "AZ-ORPH-003",
+      "title": "Public IP address is not attached to a resource",
+      "category": "Orphaned Asset",
+      "initial_severity": "Low",
+      "resource": {
+        "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-production/providers/Microsoft.Network/publicIPAddresses/pip-unused",
+        "name": "pip-unused",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "resource_group": "rg-production"
+      },
+      "description": "The public IP address is not referenced by an attached network interface.",
+      "evidence": {
+        "public_ip_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-production/providers/Microsoft.Network/publicIPAddresses/pip-unused",
+        "ip_address": "203.0.113.102"
+      },
+      "recommendation": "Release the public IP if no active service requires it.",
+      "risk_factors": {
+        "internet_exposure": 2,
+        "privilege": 0,
+        "sensitivity": 0,
+        "exploitability": 0
+      },
+      "risk_score": 17,
+      "severity": "Low"
+    },
+    {
+      "rule_id": "AZ-ORPH-003",
+      "title": "Public IP address is not attached to a resource",
+      "category": "Orphaned Asset",
+      "initial_severity": "Low",
+      "resource": {
+        "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-production/providers/Microsoft.Network/publicIPAddresses/pip-web-01",
+        "name": "pip-web-01",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "resource_group": "rg-production"
+      },
+      "description": "The public IP address is not referenced by an attached network interface.",
+      "evidence": {
+        "public_ip_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-production/providers/Microsoft.Network/publicIPAddresses/pip-web-01",
+        "ip_address": "203.0.113.198"
+      },
+      "recommendation": "Release the public IP if no active service requires it.",
+      "risk_factors": {
+        "internet_exposure": 2,
+        "privilege": 0,
+        "sensitivity": 0,
+        "exploitability": 0
+      },
+      "risk_score": 17,
+      "severity": "Low"
+    },
+    {
+      "rule_id": "AZ-ORPH-002",
+      "title": "Network interface is not attached to a virtual machine",
+      "category": "Orphaned Asset",
+      "initial_severity": "Low",
+      "resource": {
+        "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-production/providers/Microsoft.Network/networkInterfaces/nic-unused",
+        "name": "nic-unused",
+        "type": "Microsoft.Network/networkInterfaces",
+        "resource_group": "rg-production"
+      },
+      "description": "The network interface is not referenced by any discovered virtual machine.",
+      "evidence": {
+        "network_interface_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-production/providers/Microsoft.Network/networkInterfaces/nic-unused"
+      },
+      "recommendation": "Confirm that the interface is unused and remove it to simplify the environment.",
+      "risk_factors": {
+        "internet_exposure": 0,
+        "privilege": 0,
+        "sensitivity": 0,
+        "exploitability": 0
+      },
+      "risk_score": 15,
+      "severity": "Low"
+    }
+  ]
+}

@@ -1,0 +1,1232 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>Cloud Risk Assessment Report</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --background: #f4f6f8;
+            --surface: #ffffff;
+            --surface-soft: #f8fafc;
+
+            --text: #17202a;
+            --muted: #667085;
+
+            --border: #e4e7ec;
+
+            --critical: #7f1d1d;
+            --critical-soft: #fef2f2;
+
+            --high: #b42318;
+            --high-soft: #fff4ed;
+
+            --medium: #b54708;
+            --medium-soft: #fffaeb;
+
+            --low: #175cd3;
+            --low-soft: #eff8ff;
+
+            --success: #027a48;
+            --success-soft: #ecfdf3;
+
+            --shadow:
+                0 1px 2px rgba(16, 24, 40, 0.04),
+                0 4px 12px rgba(16, 24, 40, 0.05);
+        }
+
+        body {
+            margin: 0;
+            background: var(--background);
+            color: var(--text);
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: min(1180px, calc(100% - 40px));
+            margin: 40px auto 80px;
+        }
+
+        .report-header {
+            padding: 32px;
+            margin-bottom: 24px;
+
+            background: #101828;
+            color: white;
+
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+        }
+
+        .report-header .eyebrow {
+            margin: 0 0 6px;
+
+            color: #98a2b3;
+
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .report-header h1 {
+            margin: 0;
+            font-size: 30px;
+            line-height: 1.2;
+        }
+
+        .report-header p {
+            margin: 10px 0 0;
+            color: #d0d5dd;
+        }
+
+        .metadata-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(220px, 1fr));
+
+            gap: 12px;
+
+            margin-top: 24px;
+        }
+
+        .info-item {
+            padding: 12px 14px;
+
+            background: rgba(255, 255, 255, 0.06);
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.09);
+
+            border-radius: 8px;
+        }
+
+        .info-item span {
+            display: block;
+
+            margin-bottom: 2px;
+
+            color: #98a2b3;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+        }
+
+        .info-item strong {
+            display: block;
+            overflow-wrap: anywhere;
+
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .section {
+            padding: 26px;
+            margin-top: 24px;
+
+            background: var(--surface);
+
+            border: 1px solid var(--border);
+            border-radius: 12px;
+
+            box-shadow: var(--shadow);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .section-label {
+            display: block;
+
+            margin-bottom: 3px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+            font-weight: 700;
+
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        h2 {
+            margin: 0;
+
+            font-size: 21px;
+            line-height: 1.3;
+        }
+
+        .count-badge {
+            min-width: 38px;
+            padding: 4px 10px;
+
+            text-align: center;
+
+            background: #f2f4f7;
+            color: #344054;
+
+            border-radius: 999px;
+
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .metrics-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(120px, 1fr));
+
+            gap: 14px;
+        }
+
+        .metric-card {
+            padding: 18px;
+
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        .metric-card span {
+            display: block;
+
+            margin-bottom: 7px;
+
+            font-size: 12px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+        }
+
+        .metric-card strong {
+            font-size: 30px;
+            line-height: 1;
+        }
+
+        .metric-critical {
+            color: var(--critical);
+            background: var(--critical-soft);
+        }
+
+        .metric-high {
+            color: var(--high);
+            background: var(--high-soft);
+        }
+
+        .metric-medium {
+            color: var(--medium);
+            background: var(--medium-soft);
+        }
+
+        .metric-low {
+            color: var(--low);
+            background: var(--low-soft);
+        }
+
+        .summary-footer {
+            display: flex;
+            flex-wrap: wrap;
+
+            gap: 12px;
+
+            margin-top: 16px;
+        }
+
+        .summary-extra {
+            padding: 10px 14px;
+
+            background: var(--surface-soft);
+
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .summary-extra span {
+            margin-right: 8px;
+            color: var(--muted);
+        }
+
+        .summary-extra strong {
+            color: var(--text);
+        }
+
+        .inventory-table,
+        .errors-table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            background: white;
+        }
+
+        .inventory-table th,
+        .inventory-table td,
+        .errors-table th,
+        .errors-table td {
+            padding: 12px 14px;
+
+            text-align: left;
+            vertical-align: top;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .inventory-table tr:last-child th,
+        .inventory-table tr:last-child td,
+        .errors-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .inventory-table th {
+            width: 38%;
+
+            color: #475467;
+
+            font-weight: 600;
+        }
+
+        .inventory-table td {
+            font-weight: 600;
+        }
+
+        .errors-table th {
+            background: var(--surface-soft);
+
+            color: #475467;
+
+            font-size: 12px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .findings-container {
+            display: flex;
+            flex-direction: column;
+
+            gap: 18px;
+        }
+
+        .finding-card {
+            position: relative;
+
+            padding: 22px;
+
+            overflow: hidden;
+
+            background: var(--surface);
+
+            border: 1px solid var(--border);
+            border-left: 5px solid #98a2b3;
+            border-radius: 10px;
+
+            box-shadow: var(--shadow);
+        }
+
+        .finding-card.severity-critical {
+            border-left-color: var(--critical);
+        }
+
+        .finding-card.severity-high {
+            border-left-color: var(--high);
+        }
+
+        .finding-card.severity-medium {
+            border-left-color: var(--medium);
+        }
+
+        .finding-card.severity-low {
+            border-left-color: var(--low);
+        }
+
+        .finding-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+
+            gap: 18px;
+
+            padding-bottom: 16px;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .finding-number {
+            margin-bottom: 4px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+            font-weight: 700;
+
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .finding-header h3 {
+            margin: 0;
+
+            font-size: 18px;
+            line-height: 1.4;
+        }
+
+        .severity-badge {
+            display: inline-flex;
+            align-items: center;
+
+            padding: 5px 10px;
+
+            border-radius: 999px;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        .severity-badge.severity-critical {
+            color: var(--critical);
+            background: var(--critical-soft);
+        }
+
+        .severity-badge.severity-high {
+            color: var(--high);
+            background: var(--high-soft);
+        }
+
+        .severity-badge.severity-medium {
+            color: var(--medium);
+            background: var(--medium-soft);
+        }
+
+        .severity-badge.severity-low {
+            color: var(--low);
+            background: var(--low-soft);
+        }
+
+        .finding-metadata {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(150px, 1fr));
+
+            gap: 10px;
+
+            margin-top: 16px;
+        }
+
+        .finding-meta-item {
+            padding: 10px 12px;
+
+            background: var(--surface-soft);
+
+            border: 1px solid var(--border);
+            border-radius: 7px;
+        }
+
+        .finding-meta-item span {
+            display: block;
+
+            margin-bottom: 2px;
+
+            color: var(--muted);
+
+            font-size: 10px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+        }
+
+        .finding-meta-item strong {
+            display: block;
+
+            overflow-wrap: anywhere;
+
+            color: #344054;
+
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .finding-meta-item small {
+            display: block;
+
+            margin-top: 3px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+            font-weight: 400;
+        }
+
+        .resource-item {
+            grid-column: span 2;
+        }
+
+        .finding-section {
+            margin-top: 18px;
+        }
+
+        .finding-section h4 {
+            margin: 0 0 7px;
+
+            color: #344054;
+
+            font-size: 13px;
+        }
+
+        .finding-section p {
+            margin: 0;
+
+            color: #475467;
+
+            white-space: pre-wrap;
+        }
+
+        .evidence-box {
+            padding: 14px;
+
+            background: var(--surface-soft);
+
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .evidence-row {
+            display: grid;
+
+            grid-template-columns: minmax(150px, 28%) 1fr;
+
+            gap: 12px;
+
+            padding: 8px 0;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .evidence-row:last-child {
+            border-bottom: none;
+        }
+
+        .evidence-row > span {
+            color: var(--muted);
+
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .evidence-row > div {
+            overflow-wrap: anywhere;
+
+            color: #344054;
+            font-size: 12px;
+        }
+
+        .evidence-list {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        pre {
+            max-width: 100%;
+
+            padding: 12px;
+            margin: 5px 0 0;
+
+            overflow-x: auto;
+
+            background: #101828;
+            color: #eaecf0;
+
+            border-radius: 6px;
+
+            font-family:
+                "Cascadia Code",
+                Consolas,
+                monospace;
+
+            font-size: 11px;
+            line-height: 1.55;
+
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .recommendation {
+            padding: 14px;
+
+            background: #f0f9ff;
+
+            border: 1px solid #b9e6fe;
+            border-radius: 8px;
+        }
+
+        .recommendation h4 {
+            color: #026aa2;
+        }
+
+        .empty-state {
+            padding: 28px;
+
+            text-align: center;
+
+            background: var(--surface-soft);
+            color: var(--muted);
+
+            border: 1px dashed #d0d5dd;
+            border-radius: 8px;
+        }
+
+        .success-state {
+            color: var(--success);
+            background: var(--success-soft);
+            border-color: #abefc6;
+
+            font-weight: 600;
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        footer {
+            margin-top: 28px;
+
+            text-align: center;
+
+            color: var(--muted);
+
+            font-size: 11px;
+        }
+
+        @media (max-width: 800px) {
+            .container {
+                width: min(100% - 24px, 1180px);
+                margin-top: 20px;
+            }
+
+            .report-header,
+            .section {
+                padding: 20px;
+            }
+
+            .metrics-grid {
+                grid-template-columns:
+                    repeat(2, minmax(120px, 1fr));
+            }
+
+            .resource-item {
+                grid-column: auto;
+            }
+
+            .finding-header {
+                flex-direction: column;
+            }
+
+            .evidence-row {
+                grid-template-columns: 1fr;
+                gap: 3px;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .container {
+                width: 100%;
+                margin: 0;
+            }
+
+            .report-header,
+            .section,
+            .finding-card {
+                box-shadow: none;
+            }
+
+            .finding-card {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container">
+
+        <header class="report-header">
+            <p class="eyebrow">
+                Cloud Security Assessment
+            </p>
+
+            <h1>
+                Cloud Risk Assessment Report
+            </h1>
+
+            <p>
+                Security findings, discovered resources,
+                risk levels and remediation recommendations.
+            </p>
+
+            <div class="metadata-grid">
+                <div class='info-item'><span>Scan Id</span><strong>a6149bdd-446d-480c-a2ec-c81790e78399</strong></div><div class='info-item'><span>Started At</span><strong>2026-08-08 20:28:10.507911+00:00</strong></div><div class='info-item'><span>Finished At</span><strong>2026-08-08 20:28:34.524421+00:00</strong></div><div class='info-item'><span>Duration Seconds</span><strong>24.017</strong></div><div class='info-item'><span>Target</span><strong>localstack</strong></div><div class='info-item'><span>Region</span><strong>us-east-1</strong></div><div class='info-item'><span>Regions</span><strong>[
+  &quot;us-east-1&quot;
+]</strong></div><div class='info-item'><span>Endpoint Url</span><strong>http://localhost:4566</strong></div><div class='info-item'><span>Caller Arn</span><strong>arn:aws:iam::000000000000:root</strong></div><div class='info-item'><span>Generated At</span><strong>2026-08-08 20:28:34.568853+00:00</strong></div>
+            </div>
+        </header>
+
+
+        <section class="section">
+            <div class="section-header">
+                <div>
+                    <span class="section-label">
+                        Risk overview
+                    </span>
+
+                    <h2>
+                        Security Summary
+                    </h2>
+                </div>
+
+                <span class="count-badge">
+                    10
+                </span>
+            </div>
+
+            <div class="metrics-grid">
+                
+            <div class="metric-card metric-critical">
+                <span>Critical</span>
+                <strong>4</strong>
+            </div>
+            
+            <div class="metric-card metric-high">
+                <span>High</span>
+                <strong>1</strong>
+            </div>
+            
+            <div class="metric-card metric-medium">
+                <span>Medium</span>
+                <strong>3</strong>
+            </div>
+            
+            <div class="metric-card metric-low">
+                <span>Low</span>
+                <strong>2</strong>
+            </div>
+            
+            </div>
+
+            <div class="summary-footer">
+
+                <div class="summary-extra">
+                    <span>Total Findings</span>
+                    <strong>10</strong>
+                </div>
+
+                
+
+            </div>
+        </section>
+
+
+        <section class="section">
+            <div class="section-header">
+                <div>
+                    <span class="section-label">
+                        Discovery
+                    </span>
+
+                    <h2>
+                        Inventory Summary
+                    </h2>
+                </div>
+            </div>
+
+            <table class="inventory-table"><tbody><tr><th>Iam Users</th><td>3</td></tr><tr><th>Iam Roles</th><td>1</td></tr><tr><th>Iam Groups</th><td>0</td></tr><tr><th>S3 Buckets</th><td>3</td></tr><tr><th>Ec2 Instances</th><td>1</td></tr><tr><th>Ebs Volumes</th><td>3</td></tr><tr><th>Elastic Ips</th><td>2</td></tr><tr><th>Network Interfaces</th><td>2</td></tr><tr><th>Discovery Errors</th><td>4</td></tr></tbody></table>
+        </section>
+
+
+        <section class="section">
+            <div class="section-header">
+                <div>
+                    <span class="section-label">
+                        Security analysis
+                    </span>
+
+                    <h2>
+                        Security Findings
+                    </h2>
+                </div>
+
+                <span class="count-badge">
+                    10
+                </span>
+            </div>
+
+            <div class="findings-container">
+                
+        <article class="finding-card severity-critical">
+            <div class="finding-header">
+                <div>
+                    <div class="finding-number">
+                        Finding #1
+                    </div>
+
+                    <h3>Unrestricted wildcard permissions</h3>
+                </div>
+
+                <span class="severity-badge severity-critical">
+                    Critical
+                </span>
+            </div>
+
+            <div class="finding-metadata">
+                <div class='finding-meta-item'><span>Score</span><strong>10.0</strong></div><div class='finding-meta-item'><span>Rule</span><strong>IAM-001</strong></div><div class='finding-meta-item resource-item'><span>Resource</span><strong>arn:aws:iam::000000000000:user/crl-risky-admin</strong></div>
+            </div>
+
+            <div class='finding-section'><h4>Description</h4><p>crl-risky-admin is allowed to perform all actions against all resources.</p></div>
+
+            <div class="finding-section">
+                <h4>Evidence</h4>
+
+                <div class="evidence-box">
+                    <div class='evidence-row'><span>Policy Name</span><div>FullWildcardAccess</div></div><div class='evidence-row'><span>Source</span><div>identity:inline</div></div><div class='evidence-row'><span>Statement</span><div><pre>{
+  &quot;Effect&quot;: &quot;Allow&quot;,
+  &quot;Action&quot;: &quot;*&quot;,
+  &quot;Resource&quot;: &quot;*&quot;
+}</pre></div></div>
+                </div>
+            </div>
+
+            <div class='finding-section recommendation'><h4>Recommendation</h4><p>Replace Action and Resource wildcards with the minimum required permissions.</p></div>
+        </article>
+        
+        <article class="finding-card severity-critical">
+            <div class="finding-header">
+                <div>
+                    <div class="finding-number">
+                        Finding #2
+                    </div>
+
+                    <h3>S3 bucket permits public write operations</h3>
+                </div>
+
+                <span class="severity-badge severity-critical">
+                    Critical
+                </span>
+            </div>
+
+            <div class="finding-metadata">
+                <div class='finding-meta-item'><span>Score</span><strong>10.0</strong></div><div class='finding-meta-item'><span>Rule</span><strong>S3-001</strong></div><div class='finding-meta-item resource-item'><span>Resource</span><strong>arn:aws:s3:::crl-public-upload<small>Region: us-east-1</small></strong></div>
+            </div>
+
+            <div class='finding-section'><h4>Description</h4><p>An anonymous or broadly authenticated principal can modify data or bucket configuration.</p></div>
+
+            <div class="finding-section">
+                <h4>Evidence</h4>
+
+                <div class="evidence-box">
+                    <div class='evidence-row'><span>Bucket</span><div>crl-public-upload</div></div><div class='evidence-row'><span>Acl</span><div><pre>[]</pre></div></div><div class='evidence-row'><span>Policy Statements</span><div><pre>[
+  {
+    &quot;sid&quot;: &quot;PublicWrite&quot;,
+    &quot;actions&quot;: [
+      &quot;s3:PutObject&quot;
+    ],
+    &quot;resources&quot;: [
+      &quot;arn:aws:s3:::crl-public-upload/*&quot;
+    ],
+    &quot;read&quot;: false,
+    &quot;write&quot;: true
+  }
+]</pre></div></div><div class='evidence-row'><span>Effective Public Access Block</span><div><pre>{
+  &quot;BlockPublicAcls&quot;: false,
+  &quot;IgnorePublicAcls&quot;: false,
+  &quot;BlockPublicPolicy&quot;: false,
+  &quot;RestrictPublicBuckets&quot;: false
+}</pre></div></div>
+                </div>
+            </div>
+
+            <div class='finding-section recommendation'><h4>Recommendation</h4><p>Remove public write grants and enable all four S3 Block Public Access settings.</p></div>
+        </article>
+        
+        <article class="finding-card severity-critical">
+            <div class="finding-header">
+                <div>
+                    <div class="finding-number">
+                        Finding #3
+                    </div>
+
+                    <h3>S3 bucket is publicly readable</h3>
+                </div>
+
+                <span class="severity-badge severity-critical">
+                    Critical
+                </span>
+            </div>
+
+            <div class="finding-metadata">
+                <div class='finding-meta-item'><span>Score</span><strong>10.0</strong></div><div class='finding-meta-item'><span>Rule</span><strong>S3-002</strong></div><div class='finding-meta-item resource-item'><span>Resource</span><strong>arn:aws:s3:::crl-public-documents<small>Region: us-east-1</small></strong></div>
+            </div>
+
+            <div class='finding-section'><h4>Description</h4><p>The bucket policy or ACL grants public read access that is not neutralized by effective Block Public Access settings.</p></div>
+
+            <div class="finding-section">
+                <h4>Evidence</h4>
+
+                <div class="evidence-box">
+                    <div class='evidence-row'><span>Bucket</span><div>crl-public-documents</div></div><div class='evidence-row'><span>Acl</span><div><pre>[]</pre></div></div><div class='evidence-row'><span>Policy Status</span><div>-</div></div><div class='evidence-row'><span>Policy Statements</span><div><pre>[
+  {
+    &quot;sid&quot;: &quot;PublicRead&quot;,
+    &quot;actions&quot;: [
+      &quot;s3:GetObject&quot;
+    ],
+    &quot;resources&quot;: [
+      &quot;arn:aws:s3:::crl-public-documents/*&quot;
+    ],
+    &quot;read&quot;: true,
+    &quot;write&quot;: false
+  }
+]</pre></div></div><div class='evidence-row'><span>Effective Public Access Block</span><div><pre>{
+  &quot;BlockPublicAcls&quot;: false,
+  &quot;IgnorePublicAcls&quot;: false,
+  &quot;BlockPublicPolicy&quot;: false,
+  &quot;RestrictPublicBuckets&quot;: false
+}</pre></div></div>
+                </div>
+            </div>
+
+            <div class='finding-section recommendation'><h4>Recommendation</h4><p>Remove public principals unless explicitly required, then enable all four Block Public Access settings.</p></div>
+        </article>
+        
+        <article class="finding-card severity-critical">
+            <div class="finding-header">
+                <div>
+                    <div class="finding-number">
+                        Finding #4
+                    </div>
+
+                    <h3>Role trust policy allows an unrestricted principal</h3>
+                </div>
+
+                <span class="severity-badge severity-critical">
+                    Critical
+                </span>
+            </div>
+
+            <div class="finding-metadata">
+                <div class='finding-meta-item'><span>Score</span><strong>9.3</strong></div><div class='finding-meta-item'><span>Rule</span><strong>IAM-004</strong></div><div class='finding-meta-item resource-item'><span>Resource</span><strong>arn:aws:iam::000000000000:role/crl-public-trust-role</strong></div>
+            </div>
+
+            <div class='finding-section'><h4>Description</h4><p>The role can be assumed by a wildcard principal without a restricting condition.</p></div>
+
+            <div class="finding-section">
+                <h4>Evidence</h4>
+
+                <div class="evidence-box">
+                    <div class='evidence-row'><span>Role Name</span><div>crl-public-trust-role</div></div><div class='evidence-row'><span>Statement</span><div><pre>{
+  &quot;Effect&quot;: &quot;Allow&quot;,
+  &quot;Principal&quot;: {
+    &quot;AWS&quot;: &quot;*&quot;
+  },
+  &quot;Action&quot;: &quot;sts:AssumeRole&quot;
+}</pre></div></div>
+                </div>
+            </div>
+
+            <div class='finding-section recommendation'><h4>Recommendation</h4><p>Restrict Principal to trusted account or service ARNs and add appropriate conditions.</p></div>
+        </article>
+        
+        <article class="finding-card severity-high">
+            <div class="finding-header">
+                <div>
+                    <div class="finding-number">
+                        Finding #5
+                    </div>
+
+                    <h3>Console user does not have MFA</h3>
+                </div>
+
+                <span class="severity-badge severity-high">
+                    High
+                </span>
+            </div>
+
+            <div class="finding-metadata">
+                <div class='finding-meta-item'><span>Score</span><strong>7.2</strong></div><div class='finding-meta-item'><span>Rule</span><strong>IAM-005</strong></div><div class='finding-meta-item resource-item'><span>Resource</span><strong>arn:aws:iam::000000000000:user/crl-console-no-mfa</strong></div>
+            </div>
+
+            <div class='finding-section'><h4>Description</h4><p>The IAM user has a console password but no registered MFA device.</p></div>
+
+            <div class="finding-section">
+                <h4>Evidence</h4>
+
+                <div class="evidence-box">
+                    <div class='evidence-row'><span>User Name</span><div>crl-console-no-mfa</div></div><div class='evidence-row'><span>Mfa Devices</span><div><pre>[]</pre></div></div>
+                </div>
+            </div>
+
+            <div class='finding-section recommendation'><h4>Recommendation</h4><p>Require MFA for interactive IAM users or migrate workforce access to IAM Identity Center.</p></div>
+        </article>
+        
+        <article class="finding-card severity-medium">
+            <div class="finding-header">
+                <div>
+                    <div class="finding-number">
+                        Finding #6
+                    </div>
+
+                    <h3>S3 Block Public Access is incomplete</h3>
+                </div>
+
+                <span class="severity-badge severity-medium">
+                    Medium
+                </span>
+            </div>
+
+            <div class="finding-metadata">
+                <div class='finding-meta-item'><span>Score</span><strong>6.9</strong></div><div class='finding-meta-item'><span>Rule</span><strong>S3-003</strong></div><div class='finding-meta-item resource-item'><span>Resource</span><strong>arn:aws:s3:::crl-public-documents<small>Region: us-east-1</small></strong></div>
+            </div>
+
+            <div class='finding-section'><h4>Description</h4><p>One or more effective S3 Block Public Access controls are not enabled.</p></div>
+
+            <div class="finding-section">
+                <h4>Evidence</h4>
+
+                <div class="evidence-box">
+                    <div class='evidence-row'><span>Bucket</span><div>crl-public-documents</div></div><div class='evidence-row'><span>Disabled Controls</span><div><pre>[
+  &quot;BlockPublicAcls&quot;,
+  &quot;IgnorePublicAcls&quot;,
+  &quot;BlockPublicPolicy&quot;,
+  &quot;RestrictPublicBuckets&quot;
+]</pre></div></div><div class='evidence-row'><span>Effective Configuration</span><div><pre>{
+  &quot;BlockPublicAcls&quot;: false,
+  &quot;IgnorePublicAcls&quot;: false,
+  &quot;BlockPublicPolicy&quot;: false,
+  &quot;RestrictPublicBuckets&quot;: false
+}</pre></div></div>
+                </div>
+            </div>
+
+            <div class='finding-section recommendation'><h4>Recommendation</h4><p>Enable BlockPublicAcls, IgnorePublicAcls, BlockPublicPolicy, and RestrictPublicBuckets at account or bucket level.</p></div>
+        </article>
+        
+        <article class="finding-card severity-medium">
+            <div class="finding-header">
+                <div>
+                    <div class="finding-number">
+                        Finding #7
+                    </div>
+
+                    <h3>S3 Block Public Access is incomplete</h3>
+                </div>
+
+                <span class="severity-badge severity-medium">
+                    Medium
+                </span>
+            </div>
+
+            <div class="finding-metadata">
+                <div class='finding-meta-item'><span>Score</span><strong>6.1</strong></div><div class='finding-meta-item'><span>Rule</span><strong>S3-003</strong></div><div class='finding-meta-item resource-item'><span>Resource</span><strong>arn:aws:s3:::crl-public-upload<small>Region: us-east-1</small></strong></div>
+            </div>
+
+            <div class='finding-section'><h4>Description</h4><p>One or more effective S3 Block Public Access controls are not enabled.</p></div>
+
+            <div class="finding-section">
+                <h4>Evidence</h4>
+
+                <div class="evidence-box">
+                    <div class='evidence-row'><span>Bucket</span><div>crl-public-upload</div></div><div class='evidence-row'><span>Disabled Controls</span><div><pre>[
+  &quot;BlockPublicAcls&quot;,
+  &quot;IgnorePublicAcls&quot;,
+  &quot;BlockPublicPolicy&quot;,
+  &quot;RestrictPublicBuckets&quot;
+]</pre></div></div><div class='evidence-row'><span>Effective Configuration</span><div><pre>{
+  &quot;BlockPublicAcls&quot;: false,
+  &quot;IgnorePublicAcls&quot;: false,
+  &quot;BlockPublicPolicy&quot;: false,
+  &quot;RestrictPublicBuckets&quot;: false
+}</pre></div></div>
+                </div>
+            </div>
+
+            <div class='finding-section recommendation'><h4>Recommendation</h4><p>Enable BlockPublicAcls, IgnorePublicAcls, BlockPublicPolicy, and RestrictPublicBuckets at account or bucket level.</p></div>
+        </article>
+        
+        <article class="finding-card severity-medium">
+            <div class="finding-header">
+                <div>
+                    <div class="finding-number">
+                        Finding #8
+                    </div>
+
+                    <h3>Potentially orphaned EBS volume</h3>
+                </div>
+
+                <span class="severity-badge severity-medium">
+                    Medium
+                </span>
+            </div>
+
+            <div class="finding-metadata">
+                <div class='finding-meta-item'><span>Score</span><strong>4.3</strong></div><div class='finding-meta-item'><span>Rule</span><strong>ORPHAN-001</strong></div><div class='finding-meta-item resource-item'><span>Resource</span><strong>vol-5a17a1f72faa26056<small>Region: us-east-1</small></strong></div>
+            </div>
+
+            <div class='finding-section'><h4>Description</h4><p>The EBS volume is available and has no instance attachment.</p></div>
+
+            <div class="finding-section">
+                <h4>Evidence</h4>
+
+                <div class="evidence-box">
+                    <div class='evidence-row'><span>State</span><div>available</div></div><div class='evidence-row'><span>Attachments</span><div><pre>[]</pre></div></div><div class='evidence-row'><span>Size Gib</span><div>20</div></div><div class='evidence-row'><span>Volume Type</span><div>gp3</div></div>
+                </div>
+            </div>
+
+            <div class='finding-section recommendation'><h4>Recommendation</h4><p>Confirm that the volume is no longer required, snapshot it if necessary, then remove it through an approved process.</p></div>
+        </article>
+        
+        <article class="finding-card severity-low">
+            <div class="finding-header">
+                <div>
+                    <div class="finding-number">
+                        Finding #9
+                    </div>
+
+                    <h3>Unassociated Elastic IP address</h3>
+                </div>
+
+                <span class="severity-badge severity-low">
+                    Low
+                </span>
+            </div>
+
+            <div class="finding-metadata">
+                <div class='finding-meta-item'><span>Score</span><strong>3.2</strong></div><div class='finding-meta-item'><span>Rule</span><strong>ORPHAN-002</strong></div><div class='finding-meta-item resource-item'><span>Resource</span><strong>eipalloc-92334b210e0e57355<small>Region: us-east-1</small></strong></div>
+            </div>
+
+            <div class='finding-section'><h4>Description</h4><p>The allocated Elastic IP is not associated with an instance or network interface.</p></div>
+
+            <div class="finding-section">
+                <h4>Evidence</h4>
+
+                <div class="evidence-box">
+                    <div class='evidence-row'><span>Public Ip</span><div>127.83.146.15</div></div><div class='evidence-row'><span>Association Id</span><div>-</div></div>
+                </div>
+            </div>
+
+            <div class='finding-section recommendation'><h4>Recommendation</h4><p>Release the address if it is not reserved for a documented future use.</p></div>
+        </article>
+        
+        <article class="finding-card severity-low">
+            <div class="finding-header">
+                <div>
+                    <div class="finding-number">
+                        Finding #10
+                    </div>
+
+                    <h3>Detached network interface</h3>
+                </div>
+
+                <span class="severity-badge severity-low">
+                    Low
+                </span>
+            </div>
+
+            <div class="finding-metadata">
+                <div class='finding-meta-item'><span>Score</span><strong>2.5</strong></div><div class='finding-meta-item'><span>Rule</span><strong>ORPHAN-003</strong></div><div class='finding-meta-item resource-item'><span>Resource</span><strong>eni-b559c3dd09efaebef<small>Region: us-east-1</small></strong></div>
+            </div>
+
+            <div class='finding-section'><h4>Description</h4><p>The customer-managed network interface is available and has no attachment.</p></div>
+
+            <div class="finding-section">
+                <h4>Evidence</h4>
+
+                <div class="evidence-box">
+                    <div class='evidence-row'><span>Status</span><div>available</div></div><div class='evidence-row'><span>Attachment</span><div>-</div></div><div class='evidence-row'><span>Description</span><div>Detached lab interface</div></div>
+                </div>
+            </div>
+
+            <div class='finding-section recommendation'><h4>Recommendation</h4><p>Verify dependencies and delete the interface if it is no longer needed.</p></div>
+        </article>
+        
+            </div>
+        </section>
+
+
+        
+        <section class="section">
+            <div class="section-header">
+                <div>
+                    <span class="section-label">Scan health</span>
+                    <h2>Discovery Errors</h2>
+                </div>
+
+                <span class="count-badge">4</span>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="errors-table">
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Operation</th>
+                            <th>Code</th>
+                            <th>Resource</th>
+                            <th>Message</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr><td>s3control</td><td>GetPublicAccessBlock</td><td>EndpointConnectionError</td><td>000000000000</td><td>Could not connect to the endpoint URL: &quot;http://000000000000.localhost:4566/v20180820/configuration/publicAccessBlock&quot;</td></tr><tr><td>s3</td><td>GetBucketPolicyStatus</td><td>InternalFailure</td><td>crl-private-data</td><td>Sorry, the GetBucketPolicyStatus operation on the s3 service is not currently supported by LocalStack.</td></tr><tr><td>s3</td><td>GetBucketPolicyStatus</td><td>InternalFailure</td><td>crl-public-documents</td><td>Sorry, the GetBucketPolicyStatus operation on the s3 service is not currently supported by LocalStack.</td></tr><tr><td>s3</td><td>GetBucketPolicyStatus</td><td>InternalFailure</td><td>crl-public-upload</td><td>Sorry, the GetBucketPolicyStatus operation on the s3 service is not currently supported by LocalStack.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+
+
+        <footer>
+            Generated by cloud-risk-tool
+        </footer>
+
+    </main>
+</body>
+</html>

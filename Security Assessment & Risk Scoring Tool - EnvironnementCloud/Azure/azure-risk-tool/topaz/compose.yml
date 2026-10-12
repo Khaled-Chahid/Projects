@@ -1,0 +1,22 @@
+name: azure-risk-lab
+services:
+  topaz:
+    build:
+      context: .
+      args:
+        TOPAZ_IMAGE: ${TOPAZ_IMAGE:-thecloudtheory/topaz-host:latest}
+    image: azure-risk-topaz:local
+    container_name: azure-risk-topaz
+    command:
+      - --default-subscription
+      - 11111111-1111-1111-1111-111111111111
+      - --log-level
+      - Information
+    ports:
+      - "8899:8899"
+      - "8891:8891"
+    volumes:
+      - topaz-data:/app/.topaz
+    restart: unless-stopped
+volumes:
+  topaz-data:

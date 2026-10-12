@@ -1,0 +1,360 @@
+{
+  "metadata": {
+    "scan_id": "a6149bdd-446d-480c-a2ec-c81790e78399",
+    "analyzed_at": "2026-08-08T20:28:34.526260+00:00",
+    "finding_count": 10
+  },
+  "findings": [
+    {
+      "finding_id": "90b66026-6861-4f6b-bdb9-b5b02d31e0b7",
+      "rule_id": "S3-001",
+      "category": "Exposed Bucket",
+      "resource_type": "S3Bucket",
+      "resource_id": "arn:aws:s3:::crl-public-upload",
+      "title": "S3 bucket permits public write operations",
+      "description": "An anonymous or broadly authenticated principal can modify data or bucket configuration.",
+      "evidence": {
+        "bucket": "crl-public-upload",
+        "acl": [],
+        "policy_statements": [
+          {
+            "sid": "PublicWrite",
+            "actions": [
+              "s3:PutObject"
+            ],
+            "resources": [
+              "arn:aws:s3:::crl-public-upload/*"
+            ],
+            "read": false,
+            "write": true
+          }
+        ],
+        "effective_public_access_block": {
+          "BlockPublicAcls": false,
+          "IgnorePublicAcls": false,
+          "BlockPublicPolicy": false,
+          "RestrictPublicBuckets": false
+        }
+      },
+      "recommendation": "Remove public write grants and enable all four S3 Block Public Access settings.",
+      "confidence": "high",
+      "risk_input": {
+        "impact": 5,
+        "likelihood": 5,
+        "exposure": 1
+      },
+      "tags": {
+        "CloudRiskLab": "true",
+        "ExpectedFinding": "S3-001",
+        "Criticality": "high",
+        "DataClassification": "internal"
+      },
+      "references": [],
+      "region": "us-east-1"
+    },
+    {
+      "finding_id": "f2272f1c-b35a-4109-829c-a25d22b5ea6c",
+      "rule_id": "S3-002",
+      "category": "Exposed Bucket",
+      "resource_type": "S3Bucket",
+      "resource_id": "arn:aws:s3:::crl-public-documents",
+      "title": "S3 bucket is publicly readable",
+      "description": "The bucket policy or ACL grants public read access that is not neutralized by effective Block Public Access settings.",
+      "evidence": {
+        "bucket": "crl-public-documents",
+        "acl": [],
+        "policy_status": null,
+        "policy_statements": [
+          {
+            "sid": "PublicRead",
+            "actions": [
+              "s3:GetObject"
+            ],
+            "resources": [
+              "arn:aws:s3:::crl-public-documents/*"
+            ],
+            "read": true,
+            "write": false
+          }
+        ],
+        "effective_public_access_block": {
+          "BlockPublicAcls": false,
+          "IgnorePublicAcls": false,
+          "BlockPublicPolicy": false,
+          "RestrictPublicBuckets": false
+        }
+      },
+      "recommendation": "Remove public principals unless explicitly required, then enable all four Block Public Access settings.",
+      "confidence": "high",
+      "risk_input": {
+        "impact": 4,
+        "likelihood": 5,
+        "exposure": 1
+      },
+      "tags": {
+        "CloudRiskLab": "true",
+        "ExpectedFinding": "S3-002",
+        "Criticality": "high",
+        "DataClassification": "confidential"
+      },
+      "references": [],
+      "region": "us-east-1"
+    },
+    {
+      "finding_id": "b3550639-2dfb-47c5-8ae5-06ffac4117f4",
+      "rule_id": "IAM-001",
+      "category": "IAM Misconfiguration",
+      "resource_type": "IAMUser",
+      "resource_id": "arn:aws:iam::000000000000:user/crl-risky-admin",
+      "title": "Unrestricted wildcard permissions",
+      "description": "crl-risky-admin is allowed to perform all actions against all resources.",
+      "evidence": {
+        "policy_name": "FullWildcardAccess",
+        "source": "identity:inline",
+        "statement": {
+          "Effect": "Allow",
+          "Action": "*",
+          "Resource": "*"
+        }
+      },
+      "recommendation": "Replace Action and Resource wildcards with the minimum required permissions.",
+      "confidence": "high",
+      "risk_input": {
+        "impact": 5,
+        "likelihood": 5,
+        "exposure": 1
+      },
+      "tags": {
+        "CloudRiskLab": "true",
+        "ExpectedFinding": "IAM-001",
+        "Criticality": "critical"
+      },
+      "references": []
+    },
+    {
+      "finding_id": "c4fb156a-c3ee-4f65-967f-f02f31efc8a0",
+      "rule_id": "IAM-004",
+      "category": "IAM Misconfiguration",
+      "resource_type": "IAMRole",
+      "resource_id": "arn:aws:iam::000000000000:role/crl-public-trust-role",
+      "title": "Role trust policy allows an unrestricted principal",
+      "description": "The role can be assumed by a wildcard principal without a restricting condition.",
+      "evidence": {
+        "role_name": "crl-public-trust-role",
+        "statement": {
+          "Effect": "Allow",
+          "Principal": {
+            "AWS": "*"
+          },
+          "Action": "sts:AssumeRole"
+        }
+      },
+      "recommendation": "Restrict Principal to trusted account or service ARNs and add appropriate conditions.",
+      "confidence": "high",
+      "risk_input": {
+        "impact": 5,
+        "likelihood": 4,
+        "exposure": 1
+      },
+      "tags": {
+        "CloudRiskLab": "true",
+        "ExpectedFinding": "IAM-004"
+      },
+      "references": []
+    },
+    {
+      "finding_id": "302a9e77-48e7-4db0-a970-faabfe986a85",
+      "rule_id": "IAM-005",
+      "category": "IAM Misconfiguration",
+      "resource_type": "IAMUser",
+      "resource_id": "arn:aws:iam::000000000000:user/crl-console-no-mfa",
+      "title": "Console user does not have MFA",
+      "description": "The IAM user has a console password but no registered MFA device.",
+      "evidence": {
+        "user_name": "crl-console-no-mfa",
+        "mfa_devices": []
+      },
+      "recommendation": "Require MFA for interactive IAM users or migrate workforce access to IAM Identity Center.",
+      "confidence": "high",
+      "risk_input": {
+        "impact": 4,
+        "likelihood": 4,
+        "exposure": 0
+      },
+      "tags": {
+        "CloudRiskLab": "true",
+        "ExpectedFinding": "IAM-005"
+      },
+      "references": []
+    },
+    {
+      "finding_id": "d7d7b59f-5c5b-4cc7-b2f4-638b1a05950f",
+      "rule_id": "ORPHAN-001",
+      "category": "Orphaned Asset",
+      "resource_type": "EBSVolume",
+      "resource_id": "vol-5a17a1f72faa26056",
+      "title": "Potentially orphaned EBS volume",
+      "description": "The EBS volume is available and has no instance attachment.",
+      "evidence": {
+        "state": "available",
+        "attachments": [],
+        "size_gib": 20,
+        "volume_type": "gp3"
+      },
+      "recommendation": "Confirm that the volume is no longer required, snapshot it if necessary, then remove it through an approved process.",
+      "confidence": "high",
+      "risk_input": {
+        "impact": 2,
+        "likelihood": 3,
+        "exposure": 0
+      },
+      "tags": {
+        "Name": "crl-orphan-volume",
+        "CloudRiskLab": "true",
+        "ExpectedFinding": "ORPHAN-001"
+      },
+      "references": [],
+      "region": "us-east-1"
+    },
+    {
+      "finding_id": "34ef9131-7b1f-4454-9c6f-84f55b2c7a5e",
+      "rule_id": "ORPHAN-002",
+      "category": "Orphaned Asset",
+      "resource_type": "ElasticIP",
+      "resource_id": "eipalloc-92334b210e0e57355",
+      "title": "Unassociated Elastic IP address",
+      "description": "The allocated Elastic IP is not associated with an instance or network interface.",
+      "evidence": {
+        "public_ip": "127.83.146.15",
+        "association_id": null
+      },
+      "recommendation": "Release the address if it is not reserved for a documented future use.",
+      "confidence": "high",
+      "risk_input": {
+        "impact": 1,
+        "likelihood": 3,
+        "exposure": 0
+      },
+      "tags": {
+        "Name": "crl-orphan-eip",
+        "CloudRiskLab": "true",
+        "ExpectedFinding": "ORPHAN-002"
+      },
+      "references": [],
+      "region": "us-east-1"
+    },
+    {
+      "finding_id": "e64b19cf-2f7b-474b-99d5-e7a31a3bec58",
+      "rule_id": "ORPHAN-003",
+      "category": "Orphaned Asset",
+      "resource_type": "NetworkInterface",
+      "resource_id": "eni-b559c3dd09efaebef",
+      "title": "Detached network interface",
+      "description": "The customer-managed network interface is available and has no attachment.",
+      "evidence": {
+        "status": "available",
+        "attachment": null,
+        "description": "Detached lab interface"
+      },
+      "recommendation": "Verify dependencies and delete the interface if it is no longer needed.",
+      "confidence": "high",
+      "risk_input": {
+        "impact": 1,
+        "likelihood": 2,
+        "exposure": 0
+      },
+      "tags": {
+        "Name": "crl-orphan-eni",
+        "CloudRiskLab": "true",
+        "ExpectedFinding": "ORPHAN-003"
+      },
+      "references": [],
+      "region": "us-east-1"
+    },
+    {
+      "finding_id": "f097a252-3c29-455b-a285-8d7e6774af94",
+      "rule_id": "S3-003",
+      "category": "S3 Hardening",
+      "resource_type": "S3Bucket",
+      "resource_id": "arn:aws:s3:::crl-public-documents",
+      "title": "S3 Block Public Access is incomplete",
+      "description": "One or more effective S3 Block Public Access controls are not enabled.",
+      "evidence": {
+        "bucket": "crl-public-documents",
+        "disabled_controls": [
+          "BlockPublicAcls",
+          "IgnorePublicAcls",
+          "BlockPublicPolicy",
+          "RestrictPublicBuckets"
+        ],
+        "effective_configuration": {
+          "BlockPublicAcls": false,
+          "IgnorePublicAcls": false,
+          "BlockPublicPolicy": false,
+          "RestrictPublicBuckets": false
+        }
+      },
+      "recommendation": "Enable BlockPublicAcls, IgnorePublicAcls, BlockPublicPolicy, and RestrictPublicBuckets at account or bucket level.",
+      "confidence": "high",
+      "risk_input": {
+        "impact": 3,
+        "likelihood": 3,
+        "exposure": 0
+      },
+      "tags": {
+        "CloudRiskLab": "true",
+        "ExpectedFinding": "S3-002",
+        "Criticality": "high",
+        "DataClassification": "confidential"
+      },
+      "references": [],
+      "region": "us-east-1"
+    },
+    {
+      "finding_id": "62167a59-700a-4a15-9723-e2070f5e898a",
+      "rule_id": "S3-003",
+      "category": "S3 Hardening",
+      "resource_type": "S3Bucket",
+      "resource_id": "arn:aws:s3:::crl-public-upload",
+      "title": "S3 Block Public Access is incomplete",
+      "description": "One or more effective S3 Block Public Access controls are not enabled.",
+      "evidence": {
+        "bucket": "crl-public-upload",
+        "disabled_controls": [
+          "BlockPublicAcls",
+          "IgnorePublicAcls",
+          "BlockPublicPolicy",
+          "RestrictPublicBuckets"
+        ],
+        "effective_configuration": {
+          "BlockPublicAcls": false,
+          "IgnorePublicAcls": false,
+          "BlockPublicPolicy": false,
+          "RestrictPublicBuckets": false
+        }
+      },
+      "recommendation": "Enable BlockPublicAcls, IgnorePublicAcls, BlockPublicPolicy, and RestrictPublicBuckets at account or bucket level.",
+      "confidence": "high",
+      "risk_input": {
+        "impact": 3,
+        "likelihood": 3,
+        "exposure": 0
+      },
+      "tags": {
+        "CloudRiskLab": "true",
+        "ExpectedFinding": "S3-001",
+        "Criticality": "high",
+        "DataClassification": "internal"
+      },
+      "references": [],
+      "region": "us-east-1"
+    }
+  ],
+  "summary": {
+    "total": 10,
+    "Exposed Bucket": 2,
+    "IAM Misconfiguration": 3,
+    "Orphaned Asset": 3,
+    "S3 Hardening": 2
+  }
+}

@@ -1,0 +1,30 @@
+services:
+  localstack:
+    container_name: cloud-risk-localstack
+    image: cloud-risk-localstack:0.1
+    build:
+      context: .
+      args:
+        LOCALSTACK_IMAGE: localstack/localstack:4.14.0
+    ports:
+      - "127.0.0.1:4566:4566"
+      - "127.0.0.1:4510-4559:4510-4559"
+    environment:
+      SERVICES: s3,iam,sts,ec2
+      AWS_DEFAULT_REGION: us-east-1
+      DEBUG: "0"
+      PERSISTENCE: "0"
+      ENFORCE_IAM: "0"
+      EC2_VM_MANAGER: mock
+      EC2_DOWNLOAD_DEFAULT_IMAGES: "0"
+    volumes:
+      - localstack-data:/var/lib/localstack
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
+
+volumes:
+  localstack-data:

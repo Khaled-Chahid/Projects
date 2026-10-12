@@ -1,0 +1,128 @@
+{
+  "provider": "Topaz",
+  "subscription_id": "11111111-1111-1111-1111-111111111111",
+  "location": "westeurope",
+  "created": {
+    "identities": [
+      {
+        "type": "user",
+        "name": "alice.admin@topaz.local.dev",
+        "id": "0646301d-2068-4fdf-a043-4c5192ac3cdd"
+      },
+      {
+        "type": "user",
+        "name": "bob.reader@topaz.local.dev",
+        "id": "f08a3a1b-5903-40bc-99ee-d5ce9e010bee"
+      },
+      {
+        "type": "servicePrincipal",
+        "name": "sp-deployment",
+        "id": "0aafaab3-61f0-4e0f-a452-97382ee22109"
+      },
+      {
+        "type": "servicePrincipal",
+        "name": "sp-monitoring",
+        "id": "e566e22e-0f6f-41c1-ad80-c12b99d2a7e2"
+      }
+    ],
+    "role_assignments": [
+      {
+        "scope": "/subscriptions/11111111-1111-1111-1111-111111111111",
+        "principal_id": "0646301d-2068-4fdf-a043-4c5192ac3cdd",
+        "role_id": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
+        "description": "Alice Admin receives Owner on the subscription"
+      },
+      {
+        "scope": "/subscriptions/11111111-1111-1111-1111-111111111111",
+        "principal_id": "0aafaab3-61f0-4e0f-a452-97382ee22109",
+        "role_id": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+        "description": "Deployment service principal receives Contributor on the subscription"
+      },
+      {
+        "scope": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-production",
+        "principal_id": "f08a3a1b-5903-40bc-99ee-d5ce9e010bee",
+        "role_id": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
+        "description": "Bob Reader receives Reader on the production resource group"
+      },
+      {
+        "scope": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-production",
+        "principal_id": "e566e22e-0f6f-41c1-ad80-c12b99d2a7e2",
+        "role_id": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
+        "description": "Monitoring service principal receives Reader on the production resource group"
+      }
+    ],
+    "storage": [
+      {
+        "account": "stpublicdata",
+        "container": "public-data",
+        "public_access": "container",
+        "allow_blob_public_access": true
+      },
+      {
+        "account": "stprivatebackups",
+        "container": "private-backups",
+        "public_access": "private",
+        "allow_blob_public_access": false
+      }
+    ],
+    "compute": [
+      {
+        "type": "virtual_machine",
+        "name": "vm-web-01",
+        "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-production/providers/Microsoft.Compute/virtualMachines/vm-web-01"
+      },
+      {
+        "type": "disk",
+        "name": "disk-web-data",
+        "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-production/providers/Microsoft.Compute/disks/disk-web-data"
+      },
+      {
+        "type": "disk",
+        "name": "disk-old-backup",
+        "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-production/providers/Microsoft.Compute/disks/disk-old-backup"
+      }
+    ],
+    "network": [
+      {
+        "type": "nsg",
+        "name": "nsg-public-admin",
+        "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-production/providers/Microsoft.Network/networkSecurityGroups/nsg-public-admin"
+      },
+      {
+        "type": "nsg",
+        "name": "nsg-internal",
+        "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-production/providers/Microsoft.Network/networkSecurityGroups/nsg-internal"
+      },
+      {
+        "type": "public_ip",
+        "name": "pip-web-01",
+        "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-production/providers/Microsoft.Network/publicIPAddresses/pip-web-01"
+      },
+      {
+        "type": "public_ip",
+        "name": "pip-unused",
+        "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-production/providers/Microsoft.Network/publicIPAddresses/pip-unused"
+      },
+      {
+        "type": "nic",
+        "name": "nic-web-01",
+        "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-production/providers/Microsoft.Network/networkInterfaces/nic-web-01"
+      },
+      {
+        "type": "nic",
+        "name": "nic-unused",
+        "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-production/providers/Microsoft.Network/networkInterfaces/nic-unused"
+      }
+    ]
+  },
+  "expected_findings": [
+    "Owner assigned at subscription scope",
+    "Contributor assigned at subscription scope",
+    "Blob container exposed to public access",
+    "Storage account permits public Blob access",
+    "RDP and SSH exposed from the Internet",
+    "Unattached managed disk",
+    "Unattached network interface",
+    "Unattached public IP address"
+  ]
+}
